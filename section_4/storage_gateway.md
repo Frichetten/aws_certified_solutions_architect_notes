@@ -17,3 +17,19 @@ Files are stored as objects in your S3 buckets, accessed through a Network File 
 The volume interface presents your applications with disk volumes.
 Data written to these volumes can be asynchronously backed up as a point in time snapshots of your volumes. Stored as EBS snapshots.
 
+## Stored Volumes
+Stored volumes let you store your primary data locally, while asynchronously backing up that data to AWS. 
+
+## Cached Volumes
+Cached Volumes let you use Amazon Simple Storage Service as your primary data storage while retaining frequently accessed data locally in your storage gateway.
+
+## Tape Gateway
+Tape Gateway offers a durable, cost-effective solution to archive your data in the AWS Cloud.
+
+# Exam Tips
+* File Gateway- For flat files, stored directly on S3
+* Volume Gateway
+    * Stored Volumes - Entire Dataset is stored on site and is asynchronously backed up to S3
+    * Cached Volumes - Entire dataset is stored on S3 and the most frequently accessed data is cached on site.
+* Gateway Virtual Tape Library (VTL)
+    * Used for backup and uses popular backup applications like NetBackup, Backup Exec, Veeam etc.
