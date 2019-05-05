@@ -1,6 +1,8 @@
 Things to work on:
     Storage Classes
-    
+    Read the load balancer FAQs
+    Cognito
+
 AWS OpsWorks => Chef/Puppet
 Encrypted by default:
     AWS Storage Gateway

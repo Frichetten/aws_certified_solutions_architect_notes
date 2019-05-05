@@ -1,3 +1,7 @@
+* Reliability: The probability that a system will work as designed
+* Availability: The probability that a system will be available
+* Durability: The ongoing existence of the object or resource
+
 # S3 & IAM Summary
 ### IAM
 * Identity Access Management Consists of the Following:
@@ -282,3 +286,203 @@ Encryption is supported for all RDS. Encryption is done using the AWS KMS servic
 * Reddis is Multi-AZ
 * You can do backups and restores of Reddis
 * If you need to scale horizontally, use Memcached
+
+# DNS Summary
+#### Route 53 Exam Tips
+* ELBs do not have pre-defined IPv4 addresses; you resolve to them using a DNS name
+* Understand the difference between an Alias Record and a CNAME
+* Given the choice, always choose an Alias Record over a CNAME
+
+#### Common DNS Types
+* SOA Records
+* NS Records
+* A Records
+* CNAMES
+* MX Records
+* PTR Records
+
+#### Routing Policies
+* Simple Routing
+* Weighted Routing
+* Latency-based Routing
+* Failover Routing
+* Geolocation Routing
+* Geoproximity Routing
+* Multivalue Answer Routing
+
+#### Health Checks
+* You can set health checks on individual record sets
+* If a record set fails a health check it will be removed from Route53 until it passes the health check
+* You can set SNS notifications to alert you if a health check is failed
+
+* Simple Routing Policy
+* Weighted Routing Policy
+* Latency Routing Policy
+* Failover Routing Policy
+* Geolocation Routing
+* Geoproximity Routing
+* Multivalue Answer Routing
+
+# VPC Summary
+* Think of a VPC as a logical datacenter in AWS.
+* Consists of IGWs (Or Vitrual Private Gateways), Route Tables, Network Access Control Lists, Subnets, and Security Groups
+* 1 Subnet = 1 Availability Zone
+* Security Groups are Stateful; Network Access Control Lists are Stateless
+* No Transitive Peering
+
+#### Building our VPC
+* When you create a VPC a default Route Table, Network Access Control List (NACL) and a default Security Group
+* It won't create any subnets, nor will it create a default internet gateway.
+* US-East-1A in your AWS account can be completely different availability zone to US-East-1A in another AWS account. The AZ's are randomized.
+* Amazon always reserve 5 IP addresses within your subnets
+* You can only have 1 Internet Gateway per VPC
+* Security Groups cannot span VPCs
+
+#### NAT Instances vs NAT Gateways
+##### Nat Instances Exam Tips
+* When creating a Nat Instance, Disable Source/Destination Check on the Instance
+* NAT Instances must be in a public subnet.
+* There must be a route out of the private subnet to the NAT instance, in order for this to work.
+* The amount of traffic that NAT instances can support depends on the instance size. If you are bottlenecking, increase the instance size.
+* You can create high availability using Autoscaling Groups, multiple subnets in different AZs, and a script to automate failover
+* Behind a Security Group
+
+#### NAT Gateways
+* Redundant inside the Availability Zone
+* Preferred by the enterprise
+* Starts at 5Gbps and scales currently to 45Gbps
+* No need to patch
+* Automatically assigned a public ip address
+* Remember to update your route tables
+* No need to disable Source/Destination checks
+* If you have resources in multiple AZs and they share one NAT Gateway, in the event that the NAT gateway's Availability Zone is down, resources in the other AZs lose internet access. To create an AZ independent architecture, create a NAT gateway in each AZ and configure your routing to ensure that resources use the NAT gateway in the same AZ.
+
+#### Network ACLs
+* Your VPC automatically comes with a default network ACL, and by default it allows all outbound and inbound traffic
+* You can create custom network ACLs. By default, each customer network ACL denies all inbound and outbound traffic until you add rules.
+* Each subnet in your VPC must be associated with a network ACL. If you don't explicitly associate a subnet with a network ACL, the subnet is automatically associated with the default network ACL.
+* Block IP Addresses using network ACLs not Security Groups
+* You can associate a network ACL wiht multiple subnets; however a subnet can be associated with only one network at a time. When you associate a network ACL with a subnet, the previous association is removed.
+* Network ACLs contain a numbered list of rules that is evaluated in order, starting with the lowest numbered rule.
+* Network ACLs have separate inbound and outbound rules, and each rule can either allow or deny traffic.
+* Network ACLs are stateless; responses to allowed inbound traffic are subject to the rules for outbound traffic (and vice versa).
+
+#### ELBs and VPCs
+* You need a minimum of two public subnets to deploy an internet facing loadbalancer.
+
+#### VPC Flow Logs
+* You cannot enable VPC flow logs for VPCs that are peered with your VPC unless the peer VPC is in your account
+* You cannot tag a flow log
+* After you've created a flow log, you cannot change its configuration; for example; you can't associate a different IAM role with the flow log.
+* Traffic generated by instances when they contact the Amazon DNS server. If you use your own DNS server, than all traffic to that DNS server is logged. 
+* Traffic generated by a Windows instance for Amazon Windows license activation
+* Traffic to and from 169.254.169.254 for instance metadata.
+* DHCP traffic
+* Traffic to the reserved IP address for the default VPC router
+
+#### Bastion Host
+* A NAT Gatewaay or NAT instance is used to provide internet traffic to EC2 instances in a private subnet
+* A Bastion is used to securely administer EC2 Instances ( Using SSH or RDP). Bastions are called jump boxes in Australia
+* You cannot use a NAT Gateway as a Bastion Host
+
+#### Direct Connect
+* Direct Connect directly connects your data center to AWS
+* Useful for high throughput workloads
+* Or if you need a stable and reliable secure connection
+
+#### VPC Endpoints
+- Copy description here -
+##### Two types of Endpoints
+* Interface Endpoints
+* Gateway Endpoints
+##### Two Gateway Endpoints
+* S3
+* DynamoDB
+
+# High Availability Summary
+#### 3 Different Types of Load Balancers
+* Application Load Balancers
+* Network Load Balancers
+* Classic Load Balancers
+
+* 504 Error means the gateway has timed out. This means that the application not responding within the idle timeout period
+
+* Troubleshoot the application. Is it the Web Server or Database Server?
+
+* If you need the IPv4 address of your end user, look for the X-Forwarded-For header.
+
+* Instances monitored by ELB are reported as InService or OutofService
+* Health Checks check the instance health by talking to it
+* Load Balancers have their own DNS name. You are never given an IP address
+* Read the ELB FAQ for each Load Balancer
+
+#### CloudFormation
+* Is a way of completely scripting your cloud environment
+* Quick Start is a bunch of CloudFormation templates already built by AWS Solutions Architects allowing you to create complex environments very quickly
+
+# Applications Summary
+#### SQS
+* SQS is a way to de-couple your infrastructure
+* SQS is pull based, not pushed based
+* Messages are 256 KB in size
+* Messages can be kept in the queue from 1 minute to 14 days; the default retention period is 4 days.
+* 2 Types: Standard SQS and FIFO SQS
+    * Standard: Order is not guaranteed and messages can be delivered more than once
+    * FIFO: order is strictly maintained and messages are delivered only once.
+* Visibility Time Out is the amount of time that the message is invisible in the SQS queue after a reader picks up that message. Provided the job is processed before the visibility time out expires, the message will then be deleted from the queue. If the job is not processed within that time, the message will become visible again and another reader will process it. This could result in the same message bring delivered twice.
+* Visibility timeout maximum is 12 hours
+* SQS guarantees that your messages will be processed at least once
+* Amazon SQS long polling is a way to retrieve messages from your Amazon SQS queues. While the regular short polling returns immediately (even if the message queue being polled is empty), long polling doesn't return a response until a message arrives in the message queue, or the long pull times out.
+#### SWF vs SQS
+* SQS has a retention period of up to 14 days; with SWF, workflow executions can last up to 1 year. 
+* Amazon SWF presents a task-oriented API, whereas Amazon SQS offers a message-oriented API.
+* Amazon SWF ensures that a task is assigned only once and is never duplicated. With Amazon SQS, you need to handle duplicated messages and may also need to ensure that a message is processed only once.
+* Amazon SWF keeps track of all the tasks and events in an application. With Amazon SQS, you need to implement your own application-level tracking, especially if your application uses multiple queues.
+#### SWF Actors - Exam Tips
+* Workflow Starters - An application that can initiate (start) a workflow. Could be your e-commerce website following the placement of an order, or a mobile app searching for bus times.
+* Deciders - Control the flow of activity tasks in a workflow execution. If somethign has finished (or failed) in a workflow, a Decider decides what to do next.
+* Activity Workers - Carry out the activity tasks.
+#### SNS
+* Instaneous, push-based delivery (no polling)
+* Simple APIs and easy integration with applications
+* Flexible message delivery over multiple transport protocols
+* Inexpensive, pay as you go model with no up-front costs
+* Web based AWS Management Console offers the simplicity of a point and click interface
+
+#### SNS vs SQS
+* Both messaging services in AWS
+* SNS - Push
+* SQS - Polls (Pulls)
+
+#### Elastic Transcoder
+Just remember that Elastic Transcoder is a media transcoder in the cloud. It converts media files from their original source format in to different formats that will play on smartphones, tablets, PCs, and etc.
+
+#### API Gateway
+* Remember what API Gateway is at a high level
+* API Gateway has caching capabilities to increase performance
+* API Gateway is low cost and scales automatically
+* You can throttle API Gateway to prevent attacks
+* You can log results to CloudWatch
+* If you are using Javascript/AJAX that uses multipel domains with API Gateway, ensure that you have enabled CORS on API Gateway
+* CORS is enforced by the client
+
+#### Kinesis
+* Know the difference between Kinesis Streams and Kinesis Firehose. 
+* Understand what Kinesis Analytics is. 
+
+#### Cognito
+* Federation allows users to authenticate with a Web Identity Provider
+* The user authenticates first with the Web ID Provider and receives an authentication token, which is exchanged for temporary AWS credentials allowing them to assume an IAM role.
+* Cognito is an Identity Broker which handles interaction between your applications and the Web ID provider
+* User pool is user based. It handles things like user registration, authentication, and account recovery.
+* Identity pools authorise access to your AWS resources.
+
+# Serverless Summary
+* Lambda scales out (not up) automatically
+* Lambda functions are independent, 1 event = 1 function
+* Lambda is serverless
+* Know what services are serverless
+* Lambda functions can trigger other lambda functions, 1 event can = x functions if functions trigger other functions
+* Architectures can get extremely complicated, AWS X-ray allows you to debug what is happening 
+* Lambda can do things globally, you can use it to back up S3 buckets to other S3 buckets, etc
+* Know your triggers
