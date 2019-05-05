@@ -2,6 +2,9 @@ Things to work on:
     Storage Classes
     Read the load balancer FAQs
     Cognito
+    Storage Gateways
+    DynamoDB
+    SQS
 
 AWS OpsWorks => Chef/Puppet
 Encrypted by default:

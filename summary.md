@@ -1,6 +1,15 @@
 * Reliability: The probability that a system will work as designed
 * Availability: The probability that a system will be available
 * Durability: The ongoing existence of the object or resource
+* There is a soft cap of 20 instances per REGION
+* Consolidated Billing makes it easier to pay for multiple AWS accounts
+* Stateless services:
+    * DynamoDB
+    * RDS
+    * ElastiCache
+* Dedicated Hosting:
+    * Host & Dedicated
+    * Dedicated & Host
 
 # S3 & IAM Summary
 ### IAM
@@ -264,6 +273,7 @@ Encryption is supported for all RDS. Encryption is done using the AWS KMS servic
 * Spread across 3 geographically distinct data acenters
 * Eventual Consistent Reads (Default)
 * Strongly Consistent Reads
+* Limit of 400KB for combined value and name
 
 #### Redshift
 * Redshift is used for business intelligence
@@ -415,6 +425,19 @@ Encryption is supported for all RDS. Encryption is done using the AWS KMS servic
 * Health Checks check the instance health by talking to it
 * Load Balancers have their own DNS name. You are never given an IP address
 * Read the ELB FAQ for each Load Balancer
+
+#### Advanced Load Balancer Theory
+* Sticky Sessions enable your users to stick to the same EC2 instance. Can be useful if you are storing information locally to that instance.
+* Cross Zone Load Balancing enables you to load balance across multiple availability zones.
+* Path patterns allow you to direct traffic to different EC2 instances based on the URL contained in the request.
+
+#### Sticky Sessions
+Classic Load Balancer routes each request independently to the registered EC2 instance with the smallest load. Sticky Sessions allow you to bind a user's session to a specific EC2 instance. This ensures that all requests from the user during the dession are sent to the same instance.
+
+You can enable Sticky Sessions for Application Load Balancers as well, but the traffic will be sent to it at the Target Group Level.
+
+#### Path Patterns
+You can create a listener with rules to forward requests based on the URL path. This is known as path-based routing. If you are running microservices, you can route traffic to multiple back-end services using path-based routing. For example, you can route general requests to one target group and requests to render images to another target group.
 
 #### CloudFormation
 * Is a way of completely scripting your cloud environment
